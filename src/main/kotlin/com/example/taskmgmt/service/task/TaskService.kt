@@ -8,45 +8,33 @@ import org.springframework.stereotype.Service
 @Service
 class TaskService(private val repository: TaskRepository) : ATaskService() {
 
-    override fun addTask(task: Task): Task {
-        return repository.save(task)
-    }
-
-    override fun getTaskById(id: Long): Task {
-        return repository.findById(id)
+    private inline fun <T> withTask(id: Long, action: (Task) -> T): T {
+        val task = repository.findById(id)
             .orElseThrow { NoSuchElementException("Task with ID $id not found") }
+        return action(task)
     }
 
+    override fun addTask(task: Task): Task = repository.save(task)
 
-    override fun getTasks(): List<Task> {
-        return repository.findAll()
+    override fun getTaskById(id: Long): Task = withTask(id) { it }
+
+    override fun getTasks(): List<Task> = repository.findAll()
+
+    override fun filterTasks(taskStatus: TaskStatus): List<Task> = repository.findTasksByTaskStatus(taskStatus)
+
+    override fun updateTask(task: Task, taskId: Long): Task = withTask(taskId) {
+        it.title = task.title
+        it.description = task.description
+        it.taskStatus = task.taskStatus
+        repository.save(it)
     }
 
-    override fun filterTasks(taskStatus: TaskStatus): List<Task> {
-        return repository.findTasksByTaskStatus(taskStatus)
-    }
+    override fun getCountOfAllTasks(): Int = getTasks().size
 
-    override fun updateTask(task: Task, taskId: Long): Task {
-        val oldTask = getTaskById(taskId)
-        oldTask.title = task.title
-        oldTask.description = task.description
-        oldTask.taskStatus = task.taskStatus
-        return repository.save(oldTask)
-    }
+    override fun getCountOfTasksByStatus(taskStatus: TaskStatus): Int = filterTasks(taskStatus).size
 
-    override fun getCountOfAllTasks(): Int {
-        val tasks : List<Task> = getTasks()
-        return tasks.size
-    }
-
-    override fun getCountOfTasksByStatus(taskStatus: TaskStatus): Int {
-        val tasks : List<Task> = filterTasks(taskStatus)
-        return tasks.size
-    }
-
-    override fun deleteTask(taskId: Long): Task {
-        val task: Task = getTaskById(taskId)
+    override fun deleteTask(taskId: Long): Task = withTask(taskId) {
         repository.deleteById(taskId)
-        return task
+        return it
     }
 }
