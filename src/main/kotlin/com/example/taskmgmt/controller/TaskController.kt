@@ -3,6 +3,7 @@ package com.example.taskmgmt.controller
 import com.example.taskmgmt.enums.TaskStatus
 import com.example.taskmgmt.model.Task
 import com.example.taskmgmt.service.task.TaskService
+import org.springframework.web.bind.annotation.DeleteMapping
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.PostMapping
@@ -43,5 +44,10 @@ class TaskController(private val service: TaskService) {
     @GetMapping("/count/{status}")
     fun countOfTasksByStatus(@PathVariable status: TaskStatus) : Int {
         return service.getCountOfTasksByStatus(status)
+    }
+
+    @DeleteMapping("/delete/{id}")
+    fun deleteTask(@PathVariable id: Long) : Task {
+        return service.deleteTask(id)
     }
 }

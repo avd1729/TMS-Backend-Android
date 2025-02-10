@@ -11,4 +11,5 @@ abstract class ATaskService {
     abstract fun updateTask(task: Task, taskId: Long) : Task
     abstract fun getCountOfAllTasks() : Int
     abstract fun getCountOfTasksByStatus(taskStatus: TaskStatus) : Int
+    abstract fun deleteTask(taskId: Long) : Task
 }

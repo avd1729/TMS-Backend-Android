@@ -43,4 +43,10 @@ class TaskService(private val repository: TaskRepository) : ATaskService() {
         val tasks : List<Task> = filterTasks(taskStatus)
         return tasks.size
     }
+
+    override fun deleteTask(taskId: Long): Task {
+        val task: Task = getTaskById(taskId)
+        repository.deleteById(taskId)
+        return task
+    }
 }
