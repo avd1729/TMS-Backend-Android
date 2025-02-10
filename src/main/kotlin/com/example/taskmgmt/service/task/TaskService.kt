@@ -9,12 +9,14 @@ import org.springframework.stereotype.Service
 class TaskService(private val repository: TaskRepository) : ATaskService() {
 
     override fun addTask(task: Task): Task {
-        val newTask = Task()
-        newTask.title = task.title
-        newTask.description = task.description
-        newTask.taskStatus = task.taskStatus
-        return repository.save(newTask)
+        return repository.save(task)
     }
+
+    override fun getTaskById(id: Long): Task {
+        return repository.findById(id)
+            .orElseThrow { NoSuchElementException("Task with ID $id not found") }
+    }
+
 
     override fun getTasks(): List<Task> {
         return repository.findAll()
@@ -25,14 +27,20 @@ class TaskService(private val repository: TaskRepository) : ATaskService() {
     }
 
     override fun updateTask(task: Task, taskId: Long): Task {
-        TODO("Not yet implemented")
+        val oldTask = getTaskById(taskId)
+        oldTask.title = task.title
+        oldTask.description = task.description
+        oldTask.taskStatus = task.taskStatus
+        return repository.save(oldTask)
     }
 
-    override fun getCountOfAllTasks(): List<Task> {
-        TODO("Not yet implemented")
+    override fun getCountOfAllTasks(): Int {
+        val tasks : List<Task> = getTasks()
+        return tasks.size
     }
 
-    override fun getCountOfTasksByStatus(taskStatus: TaskStatus): List<Task> {
-        TODO("Not yet implemented")
+    override fun getCountOfTasksByStatus(taskStatus: TaskStatus): Int {
+        val tasks : List<Task> = filterTasks(taskStatus)
+        return tasks.size
     }
 }

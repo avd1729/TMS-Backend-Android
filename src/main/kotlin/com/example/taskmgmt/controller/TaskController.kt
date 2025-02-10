@@ -29,4 +29,19 @@ class TaskController(private val service: TaskService) {
     fun getTasksByStatus(@PathVariable status: TaskStatus) : List<Task> {
         return service.filterTasks(status)
     }
+
+    @PutMapping("/update/{id}")
+    fun updateTask(@PathVariable id: Long, @RequestBody task: Task) : Task{
+        return service.updateTask(task, id)
+    }
+
+    @GetMapping("/count")
+    fun countOfTasks() : Int {
+        return service.getCountOfAllTasks()
+    }
+
+    @GetMapping("/count/{status}")
+    fun countOfTasksByStatus(@PathVariable status: TaskStatus) : Int {
+        return service.getCountOfTasksByStatus(status)
+    }
 }
