@@ -13,7 +13,7 @@ import lombok.Setter
 data class Task(
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private val id: Long? = null,
+    val id: Long? = null,
 
     var title: String? = null,
     var description: String? = null,
