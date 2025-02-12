@@ -19,7 +19,7 @@ data class Task(
     var description: String? = null,
 
     @Enumerated(EnumType.STRING)
-    var taskStatus: TaskStatus = TaskStatus.TODO,
+    var taskStatus: TaskStatus = TaskStatus.PENDING,
 
     var createdAt: LocalDateTime = LocalDateTime.now(),
     var updatedAt: LocalDateTime = LocalDateTime.now()
