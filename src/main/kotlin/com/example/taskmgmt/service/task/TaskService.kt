@@ -29,7 +29,17 @@ class TaskService(private val repository: TaskRepository) : ATaskService() {
         repository.save(it)
     }
 
-    override fun getCountOfAllTasks(): Int = getTasks().size
+    override fun getCountOfAllTasks(): Int {
+        fun countTasksRecursively(tasks: List<Task>, index: Int = 0): Int {
+            return if (index == tasks.size) 0 else 1 + countTasksRecursively(tasks, index + 1)
+        }
+
+        return countTasksRecursively(getTasks())
+    }
+
+    private tailrec fun countTasksTailRec(tasks: List<Task>, index: Int = 0, count: Int = 0): Int {
+        return if (index == tasks.size) count else countTasksTailRec(tasks, index + 1, count + 1)
+    }
 
     override fun getCountOfTasksByStatus(taskStatus: TaskStatus): Int = filterTasks(taskStatus).size
 
